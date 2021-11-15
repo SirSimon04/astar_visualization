@@ -1,11 +1,10 @@
-import pygame
 from queue import PriorityQueue
 from spot import *
+import pygame
+from constants import *
 
-WIDTH = 800
 WIN = pygame.display.set_mode((WIDTH, WIDTH))
 pygame.display.set_caption("A* Pathfinding")
-
 
 def h(p1, p2):
     x1, y1 = p1
@@ -126,7 +125,7 @@ def a_star(draw, grid, start, end):
     count = 0
     open_set = PriorityQueue()
     open_set.put((0, count, start))
-    came_from =  {}
+    came_from = {}
     g_score = {spot: float("inf") for row in grid for spot in row}
     g_score[start] = 0
     f_score = {spot: float("inf") for row in grid for spot in row}
@@ -199,7 +198,7 @@ def get_clicked_pso(pos, rows, width):
 
 
 def main(win, width):
-    ROWS = 40
+    pygame.init()
     grid = make_grid(ROWS, width)
 
     start = None
@@ -208,6 +207,8 @@ def main(win, width):
     run = True
 
     algo_running = False
+
+    show_ui = False
 
     while run:
         draw(win, grid, ROWS, width)
@@ -239,7 +240,7 @@ def main(win, width):
                     start = None
                 elif spot == end:
                     end = None
-            #use diiferent algo on same grid
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a and start and end:
                     for row in grid:
@@ -265,7 +266,8 @@ def main(win, width):
                     greedy(lambda: draw(win, grid, ROWS, width), grid, start, end)
                     algo_running = False
 
-                if event.key == pygame.K_r and not algo_running:
+                if event.key == pygame.K_r:
+                    algo_running = not algo_running
                     for row in grid:
                         for spot in row:
                             if not spot.is_end() and not spot.is_start() and not spot.is_barrier():
@@ -275,6 +277,10 @@ def main(win, width):
                     start = None
                     end = None
                     grid = make_grid(ROWS, width)
+
+                if event.key == pygame.K_u:
+                    show_ui = not show_ui
+
 
     pygame.quit()
 
